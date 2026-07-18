@@ -25,7 +25,7 @@ export function PropertyCard({ property, search = {} }: PropertyCardProps) {
   const href = searchHref(`/cabins/${property.slug}`, search)
 
   return (
-    <Card className="shadow-soft relative h-full py-0 transition-shadow hover:shadow-lg focus-within:ring-3 focus-within:ring-ring/50">
+    <Card className="shadow-soft focus-within:ring-ring/50 relative h-full py-0 transition-shadow focus-within:ring-3 hover:shadow-lg">
       <div className="bg-muted relative aspect-[4/3] overflow-hidden">
         <Image
           src={property.hero.url}

@@ -65,8 +65,9 @@ test('homepage search reaches a preserved property enquiry and stores it', async
   const laurelHeading = page.getByRole('heading', {
     name: 'Laurel Glass Cabin',
   })
-  const laurelCard = laurelHeading
-    .locator('xpath=ancestor::*[@data-slot="card"][1]')
+  const laurelCard = laurelHeading.locator(
+    'xpath=ancestor::*[@data-slot="card"][1]',
+  )
   await expect(
     laurelCard.getByRole('link', { name: 'View Laurel Glass Cabin' }),
   ).toBeVisible()
