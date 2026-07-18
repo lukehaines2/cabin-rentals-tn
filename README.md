@@ -54,3 +54,225 @@ The recommended first vertical slice is:
 `Homepage search -> results -> property detail -> booking enquiry`
 
 using fixture property data and no live availability claims.
+
+## Implemented foundation
+
+The repository now contains the first application bootstrap:
+
+- Next.js 16 App Router and React 19;
+- Payload 3 in the same application;
+- PostgreSQL through Payload's Postgres adapter;
+- strict TypeScript and Zod environment validation;
+- Tailwind CSS v4 and shadcn/ui Base UI using the restrained Nova preset;
+- Vitest, Playwright, ESLint, and Prettier;
+- a pnpm 11 lockfile and pinned package-manager version.
+
+The Stage 1 public guest journey is implemented:
+
+- `/` contains a progressively enhanced GET search for location, preferred
+  dates, and guests;
+- `/cabins` is a statically generated all-property catalogue with shareable
+  client filtering over the ten fixtures;
+- `/cabins/[slug]` statically generates all ten active fixture details and
+  preserves valid trip state in the enquiry journey;
+- the controlled guest enquiry server action validates with Zod, silently
+  accepts honeypot submissions without storage, resolves only a public
+  published-and-active Payload property, and stores accepted records in
+  `guest-enquiries`;
+- metadata, canonicals, Open Graph basics, robots, sitemap, and query-response
+  noindex policy are active. The local demo remains `noindex,nofollow`, blocks
+  crawlers, and emits an empty sitemap.
+
+Owner contact, legal, destination, and owner-funnel routes are intentionally not
+part of this stage; the public shell does not link to those unpublished routes.
+
+## Local prerequisites
+
+- Node.js 24 LTS (the repository's `.nvmrc` targets Node 24);
+- Docker Desktop, Homebrew PostgreSQL 17, or another supported PostgreSQL
+  service;
+- `openssl` for generating a local Payload secret.
+
+The project does not require global pnpm. Use the pinned package-manager command
+shown below. PostgreSQL is required; the application does not fall back to
+SQLite.
+
+On this machine, where the `deep` role/database and `.env` are already present,
+the exact one-line development start is:
+
+```bash
+brew services start postgresql@17 && npx pnpm dev
+```
+
+## First-time setup
+
+```bash
+nvm install
+nvm use
+npx --yes pnpm@11.14.0 install --frozen-lockfile
+cp .env.example .env
+openssl rand -base64 32
+```
+
+Replace `PAYLOAD_SECRET` in `.env` with the generated value. The remaining local
+database values in `.env.example` match `docker-compose.yml`.
+
+Docker remains the portable PostgreSQL alternative. Start it, apply migrations,
+seed the guarded demo fixtures, and run the application:
+
+```bash
+docker compose up -d
+npx --yes pnpm@11.14.0 db:migrate
+npx --yes pnpm@11.14.0 seed
+npx --yes pnpm@11.14.0 dev
+```
+
+Homebrew PostgreSQL 17 is a supported local fallback:
+
+```bash
+brew install postgresql@17
+brew services start postgresql@17
+export PATH="$(brew --prefix postgresql@17)/bin:$PATH"
+createuser deep
+createdb --owner=deep deep
+psql postgres -c "ALTER ROLE deep PASSWORD 'deep-local-only';"
+npx pnpm db:migrate
+npx pnpm seed
+npx pnpm dev
+```
+
+If the role or database already exists, skip its creation command. The
+`DATABASE_URL` in `.env.example` works with both documented local options.
+On later runs, `brew services start postgresql@17 && npx pnpm dev` is sufficient;
+rerun migrations after pulling schema changes and rerun the idempotent seed when
+fixtures change.
+
+Open:
+
+- public bootstrap: `http://localhost:3000`;
+- Payload admin: `http://localhost:3000/admin`;
+- REST API: `http://localhost:3000/api`;
+- GraphQL endpoint: `http://localhost:3000/api/graphql`.
+
+When no user exists, the first visit to `/admin` presents Payload's first-user
+setup. Alternatively, the seed creates a local administrator only when
+`SEED_ADMIN_EMAIL`,
+`SEED_ADMIN_PASSWORD`, and `SEED_ADMIN_NAME` are all explicitly present in
+`.env`. Use a local-only password of at least 12 characters; never commit or
+reuse seed credentials in a deployed environment.
+
+The seed is idempotent and loads 10 fictional, published-and-active demo
+properties, taxonomies, generated media, and Site Settings. It is guarded by
+`DEMO_CONTENT_ENABLED=true`. Demo content and assets require replacement and
+must remain non-indexed.
+
+Stop the database without deleting its named volume:
+
+```bash
+docker compose down
+```
+
+## Environment variables
+
+- `DATABASE_URL` — required PostgreSQL connection string.
+- `PAYLOAD_SECRET` — required server-only secret with at least 32 characters.
+- `NEXT_PUBLIC_SERVER_URL` — required canonical application origin.
+- `DEMO_CONTENT_ENABLED` — enables local/protected-staging fixtures and assets;
+  defaults to `true`.
+- `SITE_INDEXING_ENABLED` — explicit production indexing opt-in; defaults to
+  `false`. Startup refuses indexed production while demo content is enabled.
+- `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, `SEED_ADMIN_NAME` — optional and
+  valid only when all three are supplied together.
+
+Environment variables are parsed at the server boundary. Invalid or missing
+values stop Payload initialization with field-specific errors, without logging
+secret values. Never use `.env.example` placeholders in production.
+
+## Commands
+
+All commands work through the pinned package manager even when pnpm is not
+installed globally:
+
+```bash
+npx --yes pnpm@11.14.0 dev
+npx --yes pnpm@11.14.0 build
+npx --yes pnpm@11.14.0 start
+npx --yes pnpm@11.14.0 lint
+npx --yes pnpm@11.14.0 typecheck
+npx --yes pnpm@11.14.0 test
+npx --yes pnpm@11.14.0 test:e2e
+npx --yes pnpm@11.14.0 smoke:guest-enquiry
+npx --yes pnpm@11.14.0 format
+npx --yes pnpm@11.14.0 format:check
+```
+
+## Stage 1 verification
+
+The Playwright suite builds and serves the production application on an isolated
+local port, uses Chromium only, and serializes the database-mutating enquiry
+journey. It covers the complete guest search-to-enquiry path, static
+discoverability without JavaScript, indexing safeguards, not-found and gallery
+fallbacks, keyboard/focus behaviour, and the 390/768/1440 responsive matrix.
+The test enquiry is asserted through Payload's server-only Local API and removed
+before the suite exits.
+
+```bash
+npx --yes pnpm@11.14.0 test:e2e
+```
+
+## Todo 4 local journey smoke
+
+The focused smoke uses the production build and local PostgreSQL. It submits one
+enquiry through the browser, verifies the stored snapshots, preferred dates,
+guest count, contact fields, source URL, consent, and status through Payload's
+Local API, then deletes that record.
+
+Start a production server in one terminal:
+
+```bash
+npx --yes pnpm@11.14.0 build
+npx --yes pnpm@11.14.0 exec next start -H 127.0.0.1 -p 3010
+```
+
+Run the smoke in another terminal:
+
+```bash
+npx --yes pnpm@11.14.0 smoke:guest-enquiry
+```
+
+The expected final line includes `storedCount: 1` and
+`remainingSmokeRecords: 0`. The script uses
+`todo4-smoke@example.test`, removes any stale record with that address before
+starting, and removes the newly submitted record before exiting.
+
+Install the Playwright Chromium binary once before running E2E tests:
+
+```bash
+npx --yes pnpm@11.14.0 exec playwright install chromium
+```
+
+Payload maintenance commands:
+
+```bash
+npx --yes pnpm@11.14.0 payload:types
+npx --yes pnpm@11.14.0 payload:importmap
+npx --yes pnpm@11.14.0 db:migrate:create initial-schema
+npx --yes pnpm@11.14.0 db:migrate
+npx --yes pnpm@11.14.0 db:migrate:status
+npx --yes pnpm@11.14.0 db:migrate:down
+npx --yes pnpm@11.14.0 seed
+```
+
+Run migrations before seeding a new database. Re-running the seed updates only
+records already marked as demo and does not overwrite same-slug non-demo
+content.
+
+## Deployment status
+
+Production deployment is not selected. Durable object storage, email, managed
+PostgreSQL, backups, protected previews, and rollback procedures remain part of
+P-005. Local files under `media/` are not a production storage strategy.
+
+See `docs/IMPLEMENTATION_STATUS.md` and
+`docs/adr/ADR-001_LOCAL_APPLICATION_FOUNDATION.md` for current status and the
+architecture decision.

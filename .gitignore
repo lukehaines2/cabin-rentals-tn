@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+
+# Next.js and Payload build output
+.next/
+out/
+dist/
+build/
+.payload/
+
+# Test output
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# Local uploads (production uses durable object storage)
+media/*
+!media/.gitkeep
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs and package-manager state
+*.log
+debug.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# TypeScript and tooling caches
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+.turbo/
+.cache/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*~
+
+# Deployment providers
+.vercel/
+.netlify/
+
+# Local certificates and secrets
+*.pem
+*.key
+*.crt
+
+# Temporary files
+tmp/
+temp/
+*.tmp
