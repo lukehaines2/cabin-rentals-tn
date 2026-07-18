@@ -1,0 +1,16 @@
+# Netlify configuration for the integrated Next.js + Payload application.
+# Guest catalogue pages are fixture-backed and static-first. Payload admin,
+# APIs, and guest enquiry storage require managed PostgreSQL at runtime.
+
+[build]
+  command = "pnpm build"
+
+[build.environment]
+  NODE_VERSION = "24"
+  # Keep demo fixtures non-indexed on this preview host until launch content
+  # and durable media storage are approved.
+  DEMO_CONTENT_ENABLED = "true"
+  SITE_INDEXING_ENABLED = "false"
+
+# Next.js on Netlify is handled by the official Next.js Runtime.
+# Do not set a static publish directory here.

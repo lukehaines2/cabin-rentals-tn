@@ -32,10 +32,34 @@ const serverEnvSchema = z.object({
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>
 
+/**
+ * Normalize platform-provided aliases before validation.
+ * Netlify Database exposes NETLIFY_DB_URL; Netlify also sets URL /
+ * DEPLOY_PRIME_URL for the deploy origin.
+ */
+export function resolveServerEnvironment(
+  environment: Record<string, string | undefined>,
+): Record<string, string | undefined> {
+  const databaseUrl = environment.DATABASE_URL || environment.NETLIFY_DB_URL
+  const serverUrl = (
+    environment.NEXT_PUBLIC_SERVER_URL ||
+    environment.URL ||
+    environment.DEPLOY_PRIME_URL
+  )?.replace(/\/$/, '')
+
+  return {
+    ...environment,
+    DATABASE_URL: databaseUrl,
+    NEXT_PUBLIC_SERVER_URL: serverUrl,
+  }
+}
+
 export function parseServerEnv(
   environment: Record<string, string | undefined>,
 ): ServerEnv {
-  const result = serverEnvSchema.safeParse(environment)
+  const result = serverEnvSchema.safeParse(
+    resolveServerEnvironment(environment),
+  )
 
   if (!result.success) {
     const details = result.error.issues

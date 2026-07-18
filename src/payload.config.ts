@@ -7,6 +7,7 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 
 import { getServerEnv } from './lib/env/server'
+import { migrations } from './migrations'
 import { Amenities } from './payload/collections/Amenities'
 import { GuestEnquiries } from './payload/collections/GuestEnquiries'
 import { Locations } from './payload/collections/Locations'
@@ -45,6 +46,10 @@ export default buildConfig({
     pool: {
       connectionString: env.DATABASE_URL,
     },
+    // Never auto-push schema in deployed environments; apply checked-in
+    // migrations on first Payload boot instead.
+    push: false,
+    prodMigrations: migrations,
   }),
   editor: lexicalEditor(),
   globals: [SiteSettings],

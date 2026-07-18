@@ -45,11 +45,13 @@ unit, browser, accessibility, responsive, database, build, and runtime checks.
 
 ## In progress
 
-- None.
+- A-07 preview deployment: Netlify Git integration selected; requires Netlify
+  Database plus `PAYLOAD_SECRET` in the Netlify UI before a green deploy.
 
 ## Blocked
 
-- A-07 preview deployment: blocked on P-005 hosting architecture.
+- None for the preview host selection. Remaining P-005 items are durable media
+  storage, email, backups, preview protection, and rollback ownership.
 
 ## Pending project decisions
 
@@ -64,7 +66,7 @@ unit, browser, accessibility, responsive, database, build, and runtime checks.
 
 ## Latest preview URL
 
-Not available; preview hosting has not been selected.
+Pending first green Netlify deploy after Database and `PAYLOAD_SECRET` are set.
 
 ## Known defects
 

@@ -174,9 +174,11 @@ docker compose down
 
 ## Environment variables
 
-- `DATABASE_URL` — required PostgreSQL connection string.
+- `DATABASE_URL` — required PostgreSQL connection string. On Netlify, the app
+  also accepts `NETLIFY_DB_URL` from Netlify Database.
 - `PAYLOAD_SECRET` — required server-only secret with at least 32 characters.
-- `NEXT_PUBLIC_SERVER_URL` — required canonical application origin.
+- `NEXT_PUBLIC_SERVER_URL` — required canonical application origin. On Netlify,
+  falls back to `URL` or `DEPLOY_PRIME_URL` when unset.
 - `DEMO_CONTENT_ENABLED` — enables local/protected-staging fixtures and assets;
   defaults to `true`.
 - `SITE_INDEXING_ENABLED` — explicit production indexing opt-in; defaults to
@@ -267,12 +269,37 @@ Run migrations before seeding a new database. Re-running the seed updates only
 records already marked as demo and does not overwrite same-slug non-demo
 content.
 
+## Netlify preview deploy
+
+Guest catalogue pages use committed demo fixtures under `public/demo/`, so the
+client-facing browse path does not require seeded CMS content. Payload admin,
+APIs, and guest enquiry storage still need managed PostgreSQL.
+
+1. Connect the GitHub repository in Netlify (already done if deploys are
+   running).
+2. In the site dashboard open **Database** and create a Netlify Database. This
+   injects `NETLIFY_DB_URL` for builds and runtime.
+3. In **Site configuration → Environment variables**, add:
+   - `PAYLOAD_SECRET` — generate with `openssl rand -base64 32`
+   - Optional overrides: `NEXT_PUBLIC_SERVER_URL`, `DEMO_CONTENT_ENABLED=true`,
+     `SITE_INDEXING_ENABLED=false`
+4. Optionally set `AWS_LAMBDA_JS_RUNTIME=nodejs24.x` for Functions.
+5. Trigger **Deploys → Retry deploy** or push another commit.
+
+Do not upload or commit `.env`. Keep secrets in the Netlify UI only. Local
+`media/` uploads are not durable on Netlify; object storage remains a P-005
+follow-up before staff media workflows are production-ready.
+
+Checked-in Payload migrations run automatically on first production Payload
+boot via `prodMigrations`.
+
 ## Deployment status
 
-Production deployment is not selected. Durable object storage, email, managed
-PostgreSQL, backups, protected previews, and rollback procedures remain part of
-P-005. Local files under `media/` are not a production storage strategy.
+Netlify is the selected preview host for the integrated Next.js and Payload app.
+Durable object storage, email, backups, protected previews, and rollback
+procedures remain part of P-005. Local files under `media/` are not a
+production storage strategy.
 
-See `docs/IMPLEMENTATION_STATUS.md` and
-`docs/adr/ADR-001_LOCAL_APPLICATION_FOUNDATION.md` for current status and the
-architecture decision.
+See `docs/IMPLEMENTATION_STATUS.md`,
+`docs/adr/ADR-001_LOCAL_APPLICATION_FOUNDATION.md`, and
+`docs/adr/ADR-002_NETLIFY_PREVIEW_HOSTING.md` for current status and decisions.
