@@ -174,21 +174,32 @@ docker compose down
 
 ## Environment variables
 
-- `DATABASE_URL` — required PostgreSQL connection string. On Netlify, the app
-  also accepts `NETLIFY_DB_URL` from Netlify Database.
-- `PAYLOAD_SECRET` — required server-only secret with at least 32 characters.
-- `NEXT_PUBLIC_SERVER_URL` — required canonical application origin. On Netlify,
-  falls back to `URL` or `DEPLOY_PRIME_URL` when unset.
-- `DEMO_CONTENT_ENABLED` — enables local/protected-staging fixtures and assets;
-  defaults to `true`.
-- `SITE_INDEXING_ENABLED` — explicit production indexing opt-in; defaults to
-  `false`. Startup refuses indexed production while demo content is enabled.
+This repository is public. Commit only env **templates**; never commit filled
+secret files.
+
+| File | Purpose |
+| --- | --- |
+| `.env.example` | Local development template → copy to `.env` |
+| `.env.netlify.example` | Netlify import template → fill and import in the UI |
+| `.env.test.example` | Playwright defaults → optional copy to `.env.test` |
+
+Required application variables:
+
+- `DATABASE_URL` — PostgreSQL connection string. On Netlify, `NETLIFY_DB_URL`
+  from Netlify Database is accepted as an alias.
+- `PAYLOAD_SECRET` — server-only secret with at least 32 characters. Generate
+  with `openssl rand -base64 32`. Use a different value per environment.
+- `NEXT_PUBLIC_SERVER_URL` — canonical origin (no trailing slash). On Netlify,
+  falls back to `URL` / `DEPLOY_PRIME_URL` when unset.
+- `DEMO_CONTENT_ENABLED` — demo fixtures/assets; defaults to `true` at build
+  when unset.
+- `SITE_INDEXING_ENABLED` — production indexing opt-in; defaults to `false`.
 - `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, `SEED_ADMIN_NAME` — optional and
-  valid only when all three are supplied together.
+  valid only when all three are supplied together (local seed only).
 
 Environment variables are parsed at the server boundary. Invalid or missing
 values stop Payload initialization with field-specific errors, without logging
-secret values. Never use `.env.example` placeholders in production.
+secret values.
 
 ## Commands
 
@@ -271,21 +282,19 @@ content.
 
 ## Netlify preview deploy
 
-Guest catalogue pages use committed demo fixtures under `public/demo/`. The
-production build supplies Payload placeholders when `DATABASE_URL` /
-`PAYLOAD_SECRET` are unset, so the browseable guest site can deploy without a
-database. Payload admin, APIs, and guest enquiry storage still need managed
-PostgreSQL plus a real secret.
+Guest catalogue pages use committed demo fixtures under `public/demo/`. Builds
+and runtime read secrets from Netlify Environment variables — not from git.
 
 1. Connect the GitHub repository in Netlify.
-2. Push to `main` or use **Deploys → Retry deploy** — the guest site should
-   build with Netlify's automatic `URL` and build-only Payload placeholders.
-3. To enable `/admin` and enquiry storage later:
-   - open **Database** and create a Netlify Database (`NETLIFY_DB_URL`)
-   - set `PAYLOAD_SECRET` with `openssl rand -base64 32`
-   - redeploy
+2. Create a **Netlify Database** (provides `NETLIFY_DB_URL`), or set
+   `DATABASE_URL` to an external Postgres URL.
+3. Generate a unique secret: `openssl rand -base64 32`
+4. Open **Site configuration → Environment variables → Import from .env** and
+   paste a filled copy of `.env.netlify.example` (set `PAYLOAD_SECRET`; leave
+   `DATABASE_URL` commented if using Netlify Database).
+5. Redeploy.
 
-Do not upload or commit `.env`. Keep secrets in the Netlify UI only. Local
+Do not commit filled `.env`, `.env.netlify`, or `.env.test` files. Local
 `media/` uploads are not durable on Netlify; object storage remains a P-005
 follow-up before staff media workflows are production-ready.
 

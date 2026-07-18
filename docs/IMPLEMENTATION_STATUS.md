@@ -45,8 +45,9 @@ unit, browser, accessibility, responsive, database, build, and runtime checks.
 
 ## In progress
 
-- A-07 preview deployment: Netlify Git integration selected; requires Netlify
-  Database plus `PAYLOAD_SECRET` in the Netlify UI before a green deploy.
+- A-07 preview deployment: Netlify Git integration selected. Import a filled
+  `.env.netlify.example` (Netlify Database / `PAYLOAD_SECRET`) in the Netlify
+  UI; do not commit secrets to the public repository.
 
 ## Blocked
 

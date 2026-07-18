@@ -134,8 +134,9 @@ Request a property management consultation or rental analysis.
 ### P-005 Hosting architecture
 
 Partial decision (2026-07-18): Netlify hosts the integrated Next.js and Payload
-preview, with Netlify Database for PostgreSQL. See
-`docs/adr/ADR-002_NETLIFY_PREVIEW_HOSTING.md`.
+preview, with Netlify Database for PostgreSQL. Secrets stay outside the public
+GitHub repository via `.env` locally and Netlify Environment variable import
+from `.env.netlify.example`. See `docs/adr/ADR-002_NETLIFY_PREVIEW_HOSTING.md`.
 
 Still open under P-005:
 

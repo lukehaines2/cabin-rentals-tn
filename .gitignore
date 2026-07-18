@@ -18,10 +18,11 @@ blob-report/
 media/*
 !media/.gitkeep
 
-# Environment files
+# Environment files (public repo: commit templates only, never filled secrets)
 .env
 .env.*
 !.env.example
+!.env.*.example
 
 # Logs and package-manager state
 *.log

@@ -1,77 +1,35 @@
 #!/usr/bin/env node
 /**
- * Production build entry used by Netlify and local `pnpm build`.
+ * Production build entry for local and Netlify.
  *
- * Guest catalogue pages are fixture-backed and do not need a live database at
- * build time. Payload config is still imported while compiling admin routes, so
- * this script supplies build-only placeholders when DATABASE_URL /
- * PAYLOAD_SECRET are absent. Runtime still requires real values for /admin and
- * guest enquiry storage.
+ * Secrets come from environment files / the host platform — never from
+ * committed placeholders. Local builds load `.env`; Netlify must supply
+ * variables via Site configuration (see `.env.netlify.example`).
  */
 import { spawnSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-const BUILD_DATABASE_URL =
-  'postgresql://build-placeholder:build-placeholder@127.0.0.1:5432/build_placeholder'
-const BUILD_PAYLOAD_SECRET =
-  'netlify-build-placeholder-secret-32chars-min'
+import { loadEnvFile } from './load-env-file.mjs'
 
 const env = { ...process.env }
+const isNetlify = env.NETLIFY === 'true'
 
-function loadEnvFile(filePath) {
-  if (!existsSync(filePath)) return
-
-  for (const line of readFileSync(filePath, 'utf8').split('\n')) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
-
-    const separator = trimmed.indexOf('=')
-    if (separator === -1) continue
-
-    const key = trimmed.slice(0, separator).trim()
-    let value = trimmed.slice(separator + 1).trim()
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1)
-    }
-
-    if (env[key] == null || env[key] === '') {
-      env[key] = value
-    }
-  }
-}
-
-// Local builds may rely on .env. Netlify builds must use platform env only.
-if (env.NETLIFY !== 'true') {
-  loadEnvFile(resolve(process.cwd(), '.env'))
-  loadEnvFile(resolve(process.cwd(), '.env.local'))
-}
-
-if (!env.DATABASE_URL && !env.NETLIFY_DB_URL) {
-  env.DATABASE_URL = BUILD_DATABASE_URL
-  console.log(
-    '[build] DATABASE_URL unset; using build-only placeholder (guest fixtures do not need a live DB).',
-  )
-}
-
-if (!env.PAYLOAD_SECRET) {
-  env.PAYLOAD_SECRET = BUILD_PAYLOAD_SECRET
-  console.log(
-    '[build] PAYLOAD_SECRET unset; using build-only placeholder. Set a real secret in Netlify for /admin and enquiry storage.',
-  )
+if (!isNetlify) {
+  loadEnvFile(resolve(process.cwd(), '.env'), env)
+  loadEnvFile(resolve(process.cwd(), '.env.local'), env)
 }
 
 if (!env.NEXT_PUBLIC_SERVER_URL) {
   const deployUrl = (
     env.URL ||
     env.DEPLOY_PRIME_URL ||
-    'http://localhost:3000'
-  ).replace(/\/$/, '')
-  env.NEXT_PUBLIC_SERVER_URL = deployUrl
-  console.log(`[build] NEXT_PUBLIC_SERVER_URL unset; using ${deployUrl}`)
+    (!isNetlify ? 'http://localhost:3000' : undefined)
+  )?.replace(/\/$/, '')
+
+  if (deployUrl) {
+    env.NEXT_PUBLIC_SERVER_URL = deployUrl
+    console.log(`[build] NEXT_PUBLIC_SERVER_URL unset; using ${deployUrl}`)
+  }
 }
 
 if (env.DEMO_CONTENT_ENABLED == null || env.DEMO_CONTENT_ENABLED === '') {
@@ -82,8 +40,26 @@ if (env.SITE_INDEXING_ENABLED == null || env.SITE_INDEXING_ENABLED === '') {
   env.SITE_INDEXING_ENABLED = 'false'
 }
 
-// Use the pinned pnpm via npx so local machines without a global pnpm binary
-// and Netlify both resolve the same package manager.
+const missing = []
+if (!env.DATABASE_URL && !env.NETLIFY_DB_URL) {
+  missing.push('DATABASE_URL (or NETLIFY_DB_URL from Netlify Database)')
+}
+if (!env.PAYLOAD_SECRET) {
+  missing.push('PAYLOAD_SECRET')
+}
+if (!env.NEXT_PUBLIC_SERVER_URL) {
+  missing.push('NEXT_PUBLIC_SERVER_URL (or Netlify URL)')
+}
+
+if (missing.length > 0) {
+  const hint = isNetlify
+    ? 'Import a filled copy of `.env.netlify.example` in Netlify → Site configuration → Environment variables, then redeploy.'
+    : 'Copy `.env.example` to `.env`, set real values, then retry.'
+  console.error(`[build] Missing required environment: ${missing.join('; ')}`)
+  console.error(`[build] ${hint}`)
+  process.exit(1)
+}
+
 const pnpm = ['npx', '--yes', 'pnpm@11.14.0']
 
 const steps = [
