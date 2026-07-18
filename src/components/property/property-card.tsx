@@ -25,7 +25,7 @@ export function PropertyCard({ property, search = {} }: PropertyCardProps) {
   const href = searchHref(`/cabins/${property.slug}`, search)
 
   return (
-    <Card className="shadow-soft h-full py-0">
+    <Card className="shadow-soft relative h-full py-0 transition-shadow hover:shadow-lg focus-within:ring-3 focus-within:ring-ring/50">
       <div className="bg-muted relative aspect-[4/3] overflow-hidden">
         <Image
           src={property.hero.url}
@@ -75,7 +75,14 @@ export function PropertyCard({ property, search = {} }: PropertyCardProps) {
         </ul>
       </CardContent>
       <CardFooter className="mt-auto">
-        <Link href={href} className={buttonVariants({ size: 'lg' })}>
+        <Link
+          href={href}
+          aria-label={`View ${property.name}`}
+          className={buttonVariants({
+            size: 'lg',
+            className: "after:absolute after:inset-0 after:content-['']",
+          })}
+        >
           View property
         </Link>
         <p className="text-muted-foreground ml-auto text-xs">

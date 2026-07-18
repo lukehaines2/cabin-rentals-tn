@@ -62,10 +62,15 @@ test('homepage search reaches a preserved property enquiry and stores it', async
   )
   await expect(restoredSearch.getByLabel('Guests')).toHaveValue('4')
 
-  const laurelCard = page
-    .getByRole('heading', { name: 'Laurel Glass Cabin' })
+  const laurelHeading = page.getByRole('heading', {
+    name: 'Laurel Glass Cabin',
+  })
+  const laurelCard = laurelHeading
     .locator('xpath=ancestor::*[@data-slot="card"][1]')
-  await laurelCard.getByRole('link', { name: 'View property' }).click()
+  await expect(
+    laurelCard.getByRole('link', { name: 'View Laurel Glass Cabin' }),
+  ).toBeVisible()
+  await laurelHeading.click()
 
   await expect(page).toHaveURL(`/cabins/laurel-glass-cabin?${searchQuery}`)
   await expect(page.getByText('Oct 12, 2027 – Oct 15, 2027')).toBeVisible()

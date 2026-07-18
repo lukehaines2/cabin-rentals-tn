@@ -74,7 +74,7 @@ try {
     .locator('..')
     .locator('..')
     .locator('..')
-    .getByRole('link', { name: 'View property' })
+    .getByRole('link', { name: 'View Laurel Glass Cabin' })
     .click()
   await page.waitForURL(
     '**/cabins/laurel-glass-cabin?location=gatlinburg&checkIn=2026-10-12&checkOut=2026-10-16&guests=6',
