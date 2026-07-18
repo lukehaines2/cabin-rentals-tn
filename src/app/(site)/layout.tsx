@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
-import { DemoBanner } from '@/components/layout/demo-banner'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
 import { getServerEnv } from '@/lib/env/server'
@@ -68,7 +67,6 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
           Skip to main content
         </a>
         <div className="sticky top-0 z-40">
-          <DemoBanner />
           <SiteHeader />
         </div>
         {children}

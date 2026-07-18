@@ -67,10 +67,10 @@ export function SearchForm({
       method="get"
       onSubmit={validateDates}
       className={cn(
-        'bg-card text-card-foreground shadow-lifted rounded-2xl border p-4 sm:p-5',
+        'bg-card text-card-foreground shadow-lifted border',
         variant === 'hero'
-          ? 'border-primary-foreground/15 w-full max-w-5xl'
-          : 'border-border',
+          ? 'w-full rounded-2xl border-white/40 p-3 sm:p-4 lg:rounded-[1.35rem] lg:p-3 lg:pl-5'
+          : 'rounded-2xl border-border p-4 sm:p-5',
       )}
       aria-label="Search cabins"
     >
@@ -78,12 +78,16 @@ export function SearchForm({
         className={cn(
           'gap-4',
           variant === 'hero' &&
-            'lg:grid lg:grid-cols-[1.15fr_1fr_1fr_0.7fr_auto] lg:items-end',
+            'lg:grid lg:grid-cols-[1.2fr_1fr_1fr_0.75fr_auto] lg:items-end lg:gap-0',
           variant === 'catalogue' &&
             'md:grid md:grid-cols-[1.2fr_1fr_1fr_0.7fr_auto] md:items-end',
         )}
       >
-        <Field>
+        <Field
+          className={cn(
+            variant === 'hero' && 'lg:border-border/70 lg:pr-4 lg:border-r',
+          )}
+        >
           <FieldLabel htmlFor={`${idPrefix}-location`}>Location</FieldLabel>
           <select
             id={`${idPrefix}-location`}
@@ -99,7 +103,12 @@ export function SearchForm({
             ))}
           </select>
         </Field>
-        <Field>
+        <Field
+          className={cn(
+            variant === 'hero' &&
+              'lg:border-border/70 lg:px-4 lg:border-r',
+          )}
+        >
           <FieldLabel htmlFor={`${idPrefix}-check-in`}>
             Preferred check-in
           </FieldLabel>
@@ -117,7 +126,12 @@ export function SearchForm({
             }}
           />
         </Field>
-        <Field>
+        <Field
+          className={cn(
+            variant === 'hero' &&
+              'lg:border-border/70 lg:px-4 lg:border-r',
+          )}
+        >
           <FieldLabel htmlFor={`${idPrefix}-check-out`}>
             Preferred check-out
           </FieldLabel>
@@ -131,7 +145,7 @@ export function SearchForm({
             onChange={(event) => event.currentTarget.setCustomValidity('')}
           />
         </Field>
-        <Field>
+        <Field className={cn(variant === 'hero' && 'lg:px-4')}>
           <FieldLabel htmlFor={`${idPrefix}-guests`}>Guests</FieldLabel>
           <Input
             id={`${idPrefix}-guests`}
@@ -145,13 +159,20 @@ export function SearchForm({
             placeholder="Any"
           />
         </Field>
-        <Button type="submit" size="lg" className="w-full">
+        <Button
+          type="submit"
+          size="lg"
+          className={cn(
+            'w-full',
+            variant === 'hero' && 'lg:min-w-40 lg:self-end',
+          )}
+        >
           <SearchIcon data-icon="inline-start" />
           Search
         </Button>
       </FieldGroup>
       {variant === 'hero' ? (
-        <FieldDescription className="mt-4">
+        <FieldDescription className="mt-3 px-1 lg:mt-3.5">
           Dates are preferences only. Availability will be checked after you
           enquire.
         </FieldDescription>

@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import {
@@ -69,100 +70,61 @@ export default function HomePage() {
     <main id="main-content">
       <section
         aria-labelledby="home-hero-title"
-        className="bg-primary text-primary-foreground relative isolate overflow-hidden"
+        className="relative isolate overflow-hidden"
       >
-        <Container className="grid min-h-[min(54rem,calc(100svh-7rem))] items-center gap-12 py-16 md:py-20 lg:grid-cols-[1.08fr_0.92fr] lg:gap-8">
-          <div className="relative z-10 flex max-w-5xl flex-col items-start gap-7">
-            <Badge
-              variant="outline"
-              className="border-primary-foreground/25 text-primary-foreground"
-            >
-              Cabin Rentals TN · Sevier County
-            </Badge>
+        <Image
+          src="/demo/home-hero.webp"
+          alt="Warm cabin living room with floor-to-ceiling windows overlooking the Smoky Mountains"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,28,22,0.55)_0%,rgba(18,28,22,0.28)_38%,rgba(18,28,22,0.52)_68%,rgba(18,28,22,0.78)_100%)]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(18,28,22,0.35)_100%)]"
+        />
+
+        <Container className="relative z-10 flex min-h-[min(54rem,calc(100svh-7rem))] flex-col justify-between gap-12 py-14 md:py-16 lg:py-20">
+          <div className="home-hero-copy mx-auto flex max-w-4xl flex-col items-center gap-4 pt-6 text-center md:pt-10">
+            <p className="font-heading text-[clamp(2.75rem,7vw,5.5rem)] leading-[0.9] font-medium tracking-[-0.05em] text-balance text-white">
+              Cabin Rentals{' '}
+              <span className="text-white/72">Tennessee</span>
+            </p>
             <h1
               id="home-hero-title"
-              className="font-heading max-w-[12ch] text-[length:var(--text-display)] leading-[0.86] font-medium tracking-[-0.055em] text-balance"
+              className="font-heading whitespace-nowrap text-[clamp(1.65rem,3.4vw,2.75rem)] leading-[1.08] font-medium tracking-[-0.03em] text-white"
             >
               Stay close to what feels wild.
             </h1>
-            <p className="text-primary-foreground/78 max-w-2xl text-lg leading-8 text-pretty sm:text-xl sm:leading-9">
+            <p className="max-w-2xl text-base leading-7 text-pretty text-white/82 sm:text-lg sm:leading-8">
               Discover a focused demo collection across Gatlinburg, Pigeon
               Forge, and Sevierville, then send an enquiry for the stay you have
               in mind.
             </p>
-            <SearchForm idPrefix="home" variant="hero" defaultGuests={2} />
-            <Link
-              href="/#owner-intro"
-              className={cn(
-                buttonVariants({ variant: 'link', size: 'sm' }),
-                'text-primary-foreground hover:text-primary-foreground px-0',
-              )}
-            >
-              Property owner information
-              <ArrowRightIcon data-icon="inline-end" />
-            </Link>
-            <p className="border-primary-foreground/20 text-primary-foreground/65 max-w-xl border-l pl-4 text-sm leading-6">
-              Phase 1 captures trip preferences only. It does not show live
-              availability, exact rates, or confirmed reservations.
-            </p>
           </div>
 
-          <div className="relative mx-auto aspect-[4/5] w-full max-w-[34rem] lg:mr-0">
-            <div className="bg-parchment-deep shadow-lifted absolute inset-[8%_0_0_10%] overflow-hidden rounded-[45%_45%_2rem_2rem]">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 560 700"
-                className="h-full w-full"
-                preserveAspectRatio="xMidYMid slice"
+          <div className="home-hero-search flex w-full flex-col gap-4">
+            <SearchForm idPrefix="home" variant="hero" defaultGuests={2} />
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="border-l border-white/30 pl-4 text-sm leading-6 text-white/70">
+                Phase 1 captures trip preferences only. It does not show live
+                availability, exact rates, or confirmed reservations.
+              </p>
+              <Link
+                href="/#owner-intro"
+                className={cn(
+                  buttonVariants({ variant: 'link', size: 'sm' }),
+                  'justify-start px-0 text-white hover:text-white/85 sm:justify-end',
+                )}
               >
-                <rect width="560" height="700" fill="var(--parchment-deep)" />
-                <circle cx="410" cy="134" r="58" fill="var(--accent)" />
-                <path
-                  d="M-20 390 108 235l78 95 74-105 88 118 77-92 155 165v304H-20Z"
-                  fill="oklch(0.61 0.055 151)"
-                />
-                <path
-                  d="m-10 470 125-92 75 52 95-119 98 122 66-65 131 90v262H-10Z"
-                  fill="var(--pine-soft)"
-                />
-                <path
-                  d="m-10 540 145-97 97 74 105-94 104 83 129-76v290H-10Z"
-                  fill="var(--primary)"
-                />
-                <path d="M196 510h156v102H196z" fill="oklch(0.33 0.05 49)" />
-                <path d="m174 514 100-82 100 82Z" fill="oklch(0.43 0.08 40)" />
-                <rect
-                  x="220"
-                  y="542"
-                  width="38"
-                  height="70"
-                  rx="2"
-                  fill="var(--parchment-deep)"
-                />
-                <rect
-                  x="284"
-                  y="540"
-                  width="40"
-                  height="35"
-                  rx="2"
-                  fill="var(--accent)"
-                />
-                <path
-                  d="M0 634c94-35 176-24 258 10 108 44 201 33 302-18v94H0Z"
-                  fill="oklch(0.28 0.055 153)"
-                />
-              </svg>
-            </div>
-            <div className="bg-card text-card-foreground shadow-lifted absolute right-0 bottom-3 left-0 ml-auto w-[84%] rounded-2xl p-5 sm:p-6">
-              <p className="text-ember text-[0.68rem] font-bold tracking-[0.18em] uppercase">
-                Three mountain towns
-              </p>
-              <p className="font-heading mt-2 text-2xl leading-tight font-semibold">
-                One locally rooted collection.
-              </p>
-              <p className="text-muted-foreground mt-3 text-sm leading-6">
-                Gatlinburg · Pigeon Forge · Sevierville
-              </p>
+                Property owner information
+                <ArrowRightIcon data-icon="inline-end" />
+              </Link>
             </div>
           </div>
         </Container>
