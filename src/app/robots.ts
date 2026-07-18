@@ -1,10 +1,10 @@
 import type { MetadataRoute } from 'next'
 
-import { getServerEnv } from '@/lib/env/server'
+import { getPublicSiteEnv } from '@/lib/env/server'
 import { resolveIndexingPolicy } from '@/lib/seo/indexing'
 
 export default function robots(): MetadataRoute.Robots {
-  const env = getServerEnv()
+  const env = getPublicSiteEnv()
   const policy = resolveIndexingPolicy({
     environment:
       process.env.NODE_ENV === 'production'

@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseServerEnv, resolveServerEnvironment } from './server'
+import {
+  parsePublicSiteEnv,
+  parseServerEnv,
+  resolveServerEnvironment,
+} from './server'
 
 const validEnvironment = {
   DATABASE_URL:
@@ -39,6 +43,26 @@ describe('resolveServerEnvironment', () => {
   })
 })
 
+describe('parsePublicSiteEnv', () => {
+  it('accepts deploy URL without database secrets', () => {
+    expect(
+      parsePublicSiteEnv({
+        URL: 'https://cabin-preview.netlify.app/',
+      }),
+    ).toEqual({
+      NEXT_PUBLIC_SERVER_URL: 'https://cabin-preview.netlify.app',
+      DEMO_CONTENT_ENABLED: true,
+      SITE_INDEXING_ENABLED: false,
+    })
+  })
+
+  it('reports missing public origin without requiring Payload secrets', () => {
+    expect(() => parsePublicSiteEnv({})).toThrowError(
+      /Invalid public site environment: NEXT_PUBLIC_SERVER_URL/,
+    )
+  })
+})
+
 describe('parseServerEnv', () => {
   it('returns validated server configuration', () => {
     expect(parseServerEnv(validEnvironment)).toEqual({
@@ -67,7 +91,7 @@ describe('parseServerEnv', () => {
 
   it('reports missing variables without exposing values', () => {
     expect(() => parseServerEnv({})).toThrowError(
-      /DATABASE_URL: Invalid input.*PAYLOAD_SECRET: Invalid input.*NEXT_PUBLIC_SERVER_URL: Invalid input/,
+      /Invalid server environment:.*NEXT_PUBLIC_SERVER_URL: Invalid input.*DATABASE_URL: Invalid input.*PAYLOAD_SECRET: Invalid input/,
     )
   })
 

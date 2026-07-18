@@ -271,27 +271,26 @@ content.
 
 ## Netlify preview deploy
 
-Guest catalogue pages use committed demo fixtures under `public/demo/`, so the
-client-facing browse path does not require seeded CMS content. Payload admin,
-APIs, and guest enquiry storage still need managed PostgreSQL.
+Guest catalogue pages use committed demo fixtures under `public/demo/`. The
+production build supplies Payload placeholders when `DATABASE_URL` /
+`PAYLOAD_SECRET` are unset, so the browseable guest site can deploy without a
+database. Payload admin, APIs, and guest enquiry storage still need managed
+PostgreSQL plus a real secret.
 
-1. Connect the GitHub repository in Netlify (already done if deploys are
-   running).
-2. In the site dashboard open **Database** and create a Netlify Database. This
-   injects `NETLIFY_DB_URL` for builds and runtime.
-3. In **Site configuration → Environment variables**, add:
-   - `PAYLOAD_SECRET` — generate with `openssl rand -base64 32`
-   - Optional overrides: `NEXT_PUBLIC_SERVER_URL`, `DEMO_CONTENT_ENABLED=true`,
-     `SITE_INDEXING_ENABLED=false`
-4. Optionally set `AWS_LAMBDA_JS_RUNTIME=nodejs24.x` for Functions.
-5. Trigger **Deploys → Retry deploy** or push another commit.
+1. Connect the GitHub repository in Netlify.
+2. Push to `main` or use **Deploys → Retry deploy** — the guest site should
+   build with Netlify's automatic `URL` and build-only Payload placeholders.
+3. To enable `/admin` and enquiry storage later:
+   - open **Database** and create a Netlify Database (`NETLIFY_DB_URL`)
+   - set `PAYLOAD_SECRET` with `openssl rand -base64 32`
+   - redeploy
 
 Do not upload or commit `.env`. Keep secrets in the Netlify UI only. Local
 `media/` uploads are not durable on Netlify; object storage remains a P-005
 follow-up before staff media workflows are production-ready.
 
 Checked-in Payload migrations run automatically on first production Payload
-boot via `prodMigrations`.
+boot via `prodMigrations` once a real database is connected.
 
 ## Deployment status
 

@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { getServerEnv } from '@/lib/env/server'
+import { getPublicSiteEnv } from '@/lib/env/server'
 import { catalogueRobotsDirective } from '@/lib/seo/catalogue'
 import { resolveIndexingPolicy } from '@/lib/seo/indexing'
 
 export function proxy(request: NextRequest) {
-  const env = getServerEnv()
+  const env = getPublicSiteEnv()
   const policy = resolveIndexingPolicy({
     environment:
       process.env.NODE_ENV === 'production'

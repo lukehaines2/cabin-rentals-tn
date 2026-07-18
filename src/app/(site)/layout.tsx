@@ -3,12 +3,12 @@ import type { ReactNode } from 'react'
 
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
-import { getServerEnv } from '@/lib/env/server'
+import { getPublicSiteEnv } from '@/lib/env/server'
 import { resolveIndexingPolicy } from '@/lib/seo/indexing'
 
 import '../globals.css'
 
-const env = getServerEnv()
+const env = getPublicSiteEnv()
 const indexing = resolveIndexingPolicy({
   environment:
     process.env.NODE_ENV === 'production'

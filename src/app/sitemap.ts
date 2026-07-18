@@ -1,11 +1,11 @@
 import type { MetadataRoute } from 'next'
 
 import { fixtureProperties } from '@/fixtures/properties'
-import { getServerEnv } from '@/lib/env/server'
+import { getPublicSiteEnv } from '@/lib/env/server'
 import { resolveIndexingPolicy } from '@/lib/seo/indexing'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const env = getServerEnv()
+  const env = getPublicSiteEnv()
   const policy = resolveIndexingPolicy({
     environment:
       process.env.NODE_ENV === 'production'

@@ -4,6 +4,9 @@
 
 [build]
   command = "pnpm build"
+  # Build injects Payload placeholders when DATABASE_URL / PAYLOAD_SECRET are
+  # unset so the fixture-backed guest site can publish. Create Netlify Database
+  # and set PAYLOAD_SECRET before relying on /admin or enquiry storage.
 
 [build.environment]
   NODE_VERSION = "24"
