@@ -15,6 +15,17 @@
     overflow-x: clip;
   }
 
+  /* Keep native date fields inside narrow mobile containers. */
+  input[type='date'] {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  input[type='date']::-webkit-datetime-edit {
+    min-width: 0;
+    overflow: hidden;
+  }
+
   html {
     @apply font-sans;
     scroll-behavior: smooth;
@@ -122,7 +133,8 @@
   --site-shadow-lifted:
     0 1.5rem 4rem oklch(0.25 0.035 58 / 16%),
     0 0.125rem 0.25rem oklch(0.25 0.035 58 / 8%);
-  --page-gutter: clamp(1.25rem, 4vw, 4.5rem);
+  /* Tighter gutters on small screens so primary forms can use more width. */
+  --page-gutter: clamp(0.875rem, 3.25vw, 4.5rem);
   --section-space: clamp(4.5rem, 9vw, 8.5rem);
   --content-space: clamp(2rem, 5vw, 4.5rem);
   --text-display: clamp(3.25rem, 8vw, 7.25rem);

@@ -61,31 +61,36 @@ export function SearchForm({
     }
   }
 
+  const isHero = variant === 'hero'
+
   return (
     <form
       action="/cabins"
       method="get"
       onSubmit={validateDates}
       className={cn(
-        'bg-card text-card-foreground shadow-lifted border',
-        variant === 'hero'
-          ? 'w-full rounded-2xl border-white/40 p-3 sm:p-4 lg:rounded-[1.35rem] lg:p-3 lg:pl-5'
-          : 'rounded-2xl border-border p-4 sm:p-5',
+        'bg-card text-card-foreground shadow-lifted max-w-full min-w-0 border',
+        isHero
+          ? 'w-full rounded-2xl border-white/40 p-4 sm:p-5 lg:rounded-[1.35rem] lg:p-3 lg:pl-5'
+          : 'w-full rounded-2xl border-border p-4 sm:p-5',
       )}
       aria-label="Search cabins"
     >
       <FieldGroup
         className={cn(
-          'gap-4',
-          variant === 'hero' &&
-            'lg:grid lg:grid-cols-[1.2fr_1fr_1fr_0.75fr_auto] lg:items-end lg:gap-0',
+          // Mobile-first: full-width stack with check-in/out paired side by side.
+          'grid w-full min-w-0 grid-cols-2 gap-3 sm:gap-4',
+          isHero &&
+            'lg:grid-cols-[1.2fr_1fr_1fr_0.75fr_auto] lg:items-end lg:gap-0',
           variant === 'catalogue' &&
-            'md:grid md:grid-cols-[1.2fr_1fr_1fr_0.7fr_auto] md:items-end',
+            'md:grid-cols-[1.2fr_1fr_1fr_0.7fr_auto] md:items-end',
         )}
       >
         <Field
           className={cn(
-            variant === 'hero' && 'lg:border-border/70 lg:pr-4 lg:border-r',
+            'col-span-2',
+            isHero && 'lg:col-span-1 lg:border-border/70 lg:border-r lg:pr-4',
+            variant === 'catalogue' && 'md:col-span-1',
           )}
         >
           <FieldLabel htmlFor={`${idPrefix}-location`}>Location</FieldLabel>
@@ -93,7 +98,7 @@ export function SearchForm({
             id={`${idPrefix}-location`}
             name="location"
             defaultValue={defaultValues.location ?? ''}
-            className="border-input bg-card focus-visible:border-ring focus-visible:ring-ring/50 h-11 w-full rounded-lg border px-3.5 text-base outline-none focus-visible:ring-3 md:text-sm"
+            className="border-input bg-card focus-visible:border-ring focus-visible:ring-ring/50 h-11 w-full max-w-full min-w-0 rounded-lg border px-3.5 text-base outline-none focus-visible:ring-3 md:text-sm"
           >
             <option value="">All three towns</option>
             {locations.map((location) => (
@@ -105,8 +110,9 @@ export function SearchForm({
         </Field>
         <Field
           className={cn(
-            variant === 'hero' &&
-              'lg:border-border/70 lg:px-4 lg:border-r',
+            'col-span-1',
+            isHero && 'lg:border-border/70 lg:border-r lg:px-4',
+            variant === 'catalogue' && 'md:col-span-1',
           )}
         >
           <FieldLabel htmlFor={`${idPrefix}-check-in`}>
@@ -128,8 +134,9 @@ export function SearchForm({
         </Field>
         <Field
           className={cn(
-            variant === 'hero' &&
-              'lg:border-border/70 lg:px-4 lg:border-r',
+            'col-span-1',
+            isHero && 'lg:border-border/70 lg:border-r lg:px-4',
+            variant === 'catalogue' && 'md:col-span-1',
           )}
         >
           <FieldLabel htmlFor={`${idPrefix}-check-out`}>
@@ -145,7 +152,13 @@ export function SearchForm({
             onChange={(event) => event.currentTarget.setCustomValidity('')}
           />
         </Field>
-        <Field className={cn(variant === 'hero' && 'lg:px-4')}>
+        <Field
+          className={cn(
+            'col-span-2',
+            isHero && 'lg:col-span-1 lg:px-4',
+            variant === 'catalogue' && 'md:col-span-1',
+          )}
+        >
           <FieldLabel htmlFor={`${idPrefix}-guests`}>Guests</FieldLabel>
           <Input
             id={`${idPrefix}-guests`}
@@ -163,16 +176,17 @@ export function SearchForm({
           type="submit"
           size="lg"
           className={cn(
-            'w-full',
-            variant === 'hero' && 'lg:min-w-40 lg:self-end',
+            'col-span-2 w-full',
+            isHero && 'lg:col-span-1 lg:min-w-40 lg:self-end',
+            variant === 'catalogue' && 'md:col-span-1',
           )}
         >
           <SearchIcon data-icon="inline-start" />
           Search
         </Button>
       </FieldGroup>
-      {variant === 'hero' ? (
-        <FieldDescription className="mt-3 px-1 lg:mt-3.5">
+      {isHero ? (
+        <FieldDescription className="mt-3 px-0 sm:px-1 lg:mt-3.5">
           Dates are preferences only. Availability will be checked after you
           enquire.
         </FieldDescription>

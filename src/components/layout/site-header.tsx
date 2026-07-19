@@ -14,8 +14,8 @@ const navigation = [
 function SiteHeader() {
   return (
     <header className="border-border/70 bg-background/95 border-b backdrop-blur-md">
-      <Container className="flex min-h-18 items-center justify-between gap-6 py-2">
-        <BrandMark />
+      <Container className="flex min-h-18 items-center justify-between gap-3 py-2 sm:gap-6">
+        <BrandMark className="min-w-0" />
         <div className="hidden items-center gap-7 lg:flex">
           <nav aria-label="Primary navigation">
             <ul className="flex items-center gap-1">
