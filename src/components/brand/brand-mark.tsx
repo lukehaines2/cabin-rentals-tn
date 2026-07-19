@@ -43,11 +43,11 @@ function BrandMark({ className, inverted = false }: BrandMarkProps) {
         />
         <circle cx="35.75" cy="10.25" r="2.25" fill="var(--accent)" />
       </svg>
-      <span className="flex flex-col">
-        <span className="font-heading text-[1.28rem] leading-none font-semibold tracking-[-0.025em]">
+      <span className="flex min-w-0 flex-col">
+        <span className="font-heading text-[1.15rem] leading-none font-semibold tracking-[-0.025em] sm:text-[1.28rem]">
           Cabin Rentals
         </span>
-        <span className="mt-1 text-[0.62rem] leading-none font-bold tracking-[0.26em] uppercase">
+        <span className="mt-1 text-[0.58rem] leading-none font-bold tracking-[0.22em] uppercase sm:text-[0.62rem] sm:tracking-[0.26em]">
           Tennessee
         </span>
       </span>

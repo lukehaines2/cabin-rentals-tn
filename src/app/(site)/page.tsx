@@ -89,15 +89,15 @@ export default function HomePage() {
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(18,28,22,0.35)_100%)]"
         />
 
-        <Container className="relative z-10 flex min-h-[min(54rem,calc(100svh-7rem))] flex-col justify-between gap-12 py-14 md:py-16 lg:py-20">
-          <div className="home-hero-copy mx-auto flex max-w-4xl flex-col items-center gap-4 pt-6 text-center md:pt-10">
-            <p className="font-heading text-[clamp(2.75rem,7vw,5.5rem)] leading-[0.9] font-medium tracking-[-0.05em] text-balance text-white">
+        <Container className="relative z-10 flex min-h-[min(54rem,calc(100svh-7rem))] w-full flex-col justify-between gap-10 px-2.5 py-12 sm:gap-12 sm:px-[var(--page-gutter)] sm:py-14 md:py-16 lg:py-20">
+          <div className="home-hero-copy mx-auto flex w-full max-w-4xl flex-col items-center gap-3 pt-4 text-center sm:gap-4 sm:pt-6 md:pt-10">
+            <p className="font-heading text-[clamp(2.4rem,9vw,5.5rem)] leading-[0.92] font-medium tracking-[-0.05em] text-balance text-white">
               Cabin Rentals{' '}
               <span className="text-white/72">Tennessee</span>
             </p>
             <h1
               id="home-hero-title"
-              className="font-heading whitespace-nowrap text-[clamp(1.65rem,3.4vw,2.75rem)] leading-[1.08] font-medium tracking-[-0.03em] text-white"
+              className="font-heading text-[clamp(1.45rem,5.2vw,2.75rem)] leading-[1.12] font-medium tracking-[-0.03em] text-balance text-white sm:leading-[1.08]"
             >
               Stay close to what feels wild.
             </h1>
@@ -108,10 +108,10 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="home-hero-search flex w-full flex-col gap-4">
+          <div className="home-hero-search flex w-full min-w-0 flex-col gap-3 sm:gap-4">
             <SearchForm idPrefix="home" variant="hero" defaultGuests={2} />
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="border-l border-white/30 pl-4 text-sm leading-6 text-white/70">
+            <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+              <p className="border-l border-white/30 pl-3 text-sm leading-6 text-pretty text-white/70 sm:max-w-xl sm:pl-4">
                 Phase 1 captures trip preferences only. It does not show live
                 availability, exact rates, or confirmed reservations.
               </p>
@@ -119,7 +119,7 @@ export default function HomePage() {
                 href="/#owner-intro"
                 className={cn(
                   buttonVariants({ variant: 'link', size: 'sm' }),
-                  'justify-start px-0 text-white hover:text-white/85 sm:justify-end',
+                  'justify-start px-0 text-white hover:text-white/85 sm:shrink-0 sm:justify-end',
                 )}
               >
                 Property owner information
