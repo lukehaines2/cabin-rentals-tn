@@ -89,7 +89,7 @@ export default function HomePage() {
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(18,28,22,0.35)_100%)]"
         />
 
-        <Container className="relative z-10 flex min-h-[min(54rem,calc(100svh-7rem))] w-full flex-col justify-between gap-10 px-3 py-12 sm:gap-12 sm:px-[var(--page-gutter)] sm:py-14 md:py-16 lg:py-20">
+        <Container className="relative z-10 flex min-h-[min(54rem,calc(100svh-7rem))] w-full flex-col justify-between gap-10 px-2.5 py-12 sm:gap-12 sm:px-[var(--page-gutter)] sm:py-14 md:py-16 lg:py-20">
           <div className="home-hero-copy mx-auto flex w-full max-w-4xl flex-col items-center gap-3 pt-4 text-center sm:gap-4 sm:pt-6 md:pt-10">
             <p className="font-heading text-[clamp(2.4rem,9vw,5.5rem)] leading-[0.92] font-medium tracking-[-0.05em] text-balance text-white">
               Cabin Rentals{' '}

@@ -71,15 +71,16 @@ export function SearchForm({
       className={cn(
         'bg-card text-card-foreground shadow-lifted max-w-full min-w-0 border',
         isHero
-          ? 'w-full rounded-2xl border-white/40 p-4 sm:p-5 lg:rounded-[1.35rem] lg:p-3 lg:pl-5'
-          : 'w-full rounded-2xl border-border p-4 sm:p-5',
+          ? 'w-full rounded-2xl border-white/40 p-3.5 sm:p-5 lg:rounded-[1.35rem] lg:p-3 lg:pl-5'
+          : 'w-full rounded-2xl border-border p-3.5 sm:p-5',
       )}
       aria-label="Search cabins"
     >
       <FieldGroup
         className={cn(
-          // Mobile-first: full-width stack with check-in/out paired side by side.
-          'grid w-full min-w-0 grid-cols-2 gap-3 sm:gap-4',
+          // Phone: single-column stack so date fields stay usable.
+          // From sm: pair check-in/out; desktop variants restore the row.
+          'grid w-full min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4',
           isHero &&
             'lg:grid-cols-[1.2fr_1fr_1fr_0.75fr_auto] lg:items-end lg:gap-0',
           variant === 'catalogue' &&
@@ -88,7 +89,7 @@ export function SearchForm({
       >
         <Field
           className={cn(
-            'col-span-2',
+            'col-span-1 sm:col-span-2',
             isHero && 'lg:col-span-1 lg:border-border/70 lg:border-r lg:pr-4',
             variant === 'catalogue' && 'md:col-span-1',
           )}
@@ -112,7 +113,6 @@ export function SearchForm({
           className={cn(
             'col-span-1',
             isHero && 'lg:border-border/70 lg:border-r lg:px-4',
-            variant === 'catalogue' && 'md:col-span-1',
           )}
         >
           <FieldLabel htmlFor={`${idPrefix}-check-in`}>
@@ -136,7 +136,6 @@ export function SearchForm({
           className={cn(
             'col-span-1',
             isHero && 'lg:border-border/70 lg:border-r lg:px-4',
-            variant === 'catalogue' && 'md:col-span-1',
           )}
         >
           <FieldLabel htmlFor={`${idPrefix}-check-out`}>
@@ -154,7 +153,7 @@ export function SearchForm({
         </Field>
         <Field
           className={cn(
-            'col-span-2',
+            'col-span-1 sm:col-span-2',
             isHero && 'lg:col-span-1 lg:px-4',
             variant === 'catalogue' && 'md:col-span-1',
           )}
@@ -176,7 +175,7 @@ export function SearchForm({
           type="submit"
           size="lg"
           className={cn(
-            'col-span-2 w-full',
+            'col-span-1 w-full sm:col-span-2',
             isHero && 'lg:col-span-1 lg:min-w-40 lg:self-end',
             variant === 'catalogue' && 'md:col-span-1',
           )}
